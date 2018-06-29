@@ -177,7 +177,7 @@ describe ('winston-azure-application-insights', function() {
 			beforeEach(function() {
 				var freshClient = new appInsights.TelemetryClient('FAKEKEY');
 				aiLogger = new transport.AzureApplicationInsightsLogger(
-					{ client: freshClient, treatErrorsAsExceptions: true }
+					{ client: freshClient }
 				);
 				clientMock = sinon.mock(aiLogger.client);
 			})
@@ -187,15 +187,16 @@ describe ('winston-azure-application-insights', function() {
 			});
 
 
-			it('should not track exceptions with default option', function() {
+			it('should track exceptions with default option', function() {
 				aiLogger = new transport.AzureApplicationInsightsLogger({ key: 'FAKEKEY' });
 				
-				clientMock.expects("trackException").never();
-				
+				clientMock.expects("trackException");
+								
 				aiLogger.log('error', 'error message');
+				clientMock.verify();
 			});
 			
-			it('should not track exceptions if the option is off', function() {
+			it('should not track exceptions if the option is explicitly set to off', function() {
 				aiLogger = new transport.AzureApplicationInsightsLogger({
 					key: 'FAKEKEY', treatErrorsAsExceptions: false
 				});
@@ -203,6 +204,17 @@ describe ('winston-azure-application-insights', function() {
 				clientMock.expects("trackException").never();
 				
 				aiLogger.log('error', 'error message');
+			});
+
+			it('should track exceptions if the option is explicitly set to on', function() {
+				aiLogger = new transport.AzureApplicationInsightsLogger({
+					key: 'FAKEKEY', treatErrorsAsExceptions: true
+				});
+	
+				clientMock.expects("trackException");
+				
+				aiLogger.log('error', 'error message');
+				clientMock.verify();
 			});
 
 			it('should not track exceptions if level < error', function() {

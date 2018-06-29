@@ -127,7 +127,7 @@ silly          | verbose (0)
 
 ## Treating errors as exceptions
 
-You can set the option `treatErrorsAsExceptions` when configuring the transport to treat errors as app insights exceptions for log levels >= `error` (defaults to `false`).
+You can set the option `treatErrorsAsExceptions` when configuring the transport to treat errors as app insights exceptions for log levels >= `error` (defaults to `true`).
 
 This allows you to see it clearly in the Azure Application Insights instead of having to access trace information manually and set up alerts based on the related metrics.
 
